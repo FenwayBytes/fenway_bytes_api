@@ -2,7 +2,9 @@ import { Rating } from './rating.model';
 
 interface IBusinessDetailed {
     id: string;
-    hours: [number[]];
+    name: string;
+    coordinates: number[]; // Two Numbers
+    hours: [number[], number[],number[], number[],number[],number[],number[]];
     hasCoffee: boolean;
     hasFood: boolean;
     hasLine: boolean;
@@ -12,7 +14,9 @@ interface IBusinessDetailed {
 class Business {
     constructor(
         private id: string = ' ',
-        private hours: [number[]] = [[]],
+        private name: string = '',
+        private coordinates: number[] = [],
+        private hours: [number[], number[], number[], number[], number[], number[], number[]] = [[], [],[],[],[],[],[]],
         private hasCoffee: boolean = false,
         private hasFood: boolean = false,
         private hasLine: boolean = false,
