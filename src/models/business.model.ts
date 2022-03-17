@@ -54,4 +54,21 @@ class Business {
             rating: this.getRating()
         } as IBusinessDetailed;
     }
+
+    public setCoffee = (hasCoffee: boolean) : void => {
+        this.hasCoffee = hasCoffee;
+    }
+
+    public setLine = (setLine: boolean) : void => {
+        this.hasLine = setLine;
+    }
+
+    public setFood = (hasFood: boolean) : void => {
+        this.hasFood = hasFood;
+    }
+}
+
+export {
+    Business,
+    IBusinessDetailed
 }
