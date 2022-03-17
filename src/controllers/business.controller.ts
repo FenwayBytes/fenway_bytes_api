@@ -34,6 +34,7 @@ const ReportLine = async(req: Request, res: Response, next: NextFunction) : Prom
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -67,6 +68,7 @@ const ReportFood = async(req: Request, res: Response, next: NextFunction) : Prom
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -100,6 +102,7 @@ const ReportCoffee = async(req: Request, res: Response, next: NextFunction) : Pr
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -128,6 +131,25 @@ const LoadBusiness = async(req: Request, res: Response, next: NextFunction) : Pr
         session.dispose();
         return res.status(418).send("I'm a Teapot");
     }   
+}
+
+const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>>> => {
+
+    const session = store.openSession();
+
+    try {
+
+        let businesses: any[] = await session.query<Business>({ collection: 'Businesses' })
+            .selectFields(['id', 'name', 'coordinates', 'hours'])
+            .all();
+        return res.status(200).send(businesses);
+
+    } catch (err) {
+        return res.status(500).send('Server Error');
+    } finally {
+        session.dispose();
+        return res.status(418).send("I'm a Teapot");
+    }
 }
 
 const AddRating = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
@@ -161,6 +183,7 @@ const AddRating = async(req: Request, res: Response, next: NextFunction) : Promi
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -172,8 +195,8 @@ const AddRating = async(req: Request, res: Response, next: NextFunction) : Promi
 export {
     AddRating,
     LoadBusiness,
+    LoadAllBusinesses,
     ReportCoffee,
     ReportFood,
     ReportLine
-    
 }
