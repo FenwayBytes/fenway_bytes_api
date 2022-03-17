@@ -6,7 +6,9 @@
   "scripts": {
     "clean": "rimraf dist/*",
     "build": "tsc",
-    "dev": "nodemon --watch \"./**/**/*.ts\" --exec \"ts-node\" ./src/server.ts"
+    "dev": "nodemon --watch \"./**/**/*.ts\" --exec \"ts-node\" ./src/server.ts",
+    "build:run": "node ./dist/server.js",
+    "upload": "node ./dist/admin/build.js"
   },
   "repository": {
     "type": "git",
