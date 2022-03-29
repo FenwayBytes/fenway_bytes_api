@@ -9,8 +9,8 @@ import {
 
 const ReportLine = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
     
-    let id: string = req.params.id;
-    let line: boolean = Boolean(req.params.line);
+    let id: string = req.body.id;
+    let line: boolean = Boolean(req.body.line);
 
     const hasId: boolean = id !== null && id !== undefined && id.length !== 0;
     if (!hasId) throw new Error('404');
@@ -27,13 +27,12 @@ const ReportLine = async(req: Request, res: Response, next: NextFunction) : Prom
 
         await session.saveChanges();
 
-        let detailed: IBusinessDetailed = business.getBusiness();
-
-        return res.status(200).send(detailed);
+        return res.status(200).send(business);
     } catch (err) {
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -42,8 +41,8 @@ const ReportLine = async(req: Request, res: Response, next: NextFunction) : Prom
 
 const ReportFood = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
     
-    let id: string = req.params.id;
-    let food: boolean = Boolean(req.params.food);
+    let id: string = req.body.id;
+    let food: boolean = Boolean(req.body.food);
 
     const hasId: boolean = id !== null && id !== undefined && id.length !== 0;
     if (!hasId) throw new Error('404');
@@ -60,13 +59,12 @@ const ReportFood = async(req: Request, res: Response, next: NextFunction) : Prom
 
         await session.saveChanges();
 
-        let detailed: IBusinessDetailed = business.getBusiness();
-
-        return res.status(200).send(detailed);
+        return res.status(200).send(business);
     } catch (err) {
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -75,8 +73,8 @@ const ReportFood = async(req: Request, res: Response, next: NextFunction) : Prom
 
 const ReportCoffee = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
     
-    let id: string = req.params.id;
-    let coffee: boolean = Boolean(req.params.coffee);
+    let id: string = req.body.id;
+    let coffee: boolean = Boolean(req.body.coffee);
 
     const hasId: boolean = id !== null && id !== undefined && id.length !== 0;
     if (!hasId) throw new Error('404');
@@ -93,20 +91,19 @@ const ReportCoffee = async(req: Request, res: Response, next: NextFunction) : Pr
 
         await session.saveChanges();
 
-        let detailed: IBusinessDetailed = business.getBusiness();
-
-        return res.status(200).send(detailed);
+        return res.status(200).send(business);
     } catch (err) {
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
     }   
 }
 
-const LoadBusiness = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
+const LoadBusiness = async(req: Request, res: Response, next: NextFunction) : Promise<any> => {
     
     let id: string = req.params.id;
     const hasId: boolean = id !== null && id !== undefined && id.length !== 0;
@@ -117,24 +114,43 @@ const LoadBusiness = async(req: Request, res: Response, next: NextFunction) : Pr
     try {
 
         let business: Business = await session.load<Business>(id);
-        let detailed: IBusinessDetailed = business.getBusiness();
 
-        return res.status(200).send(detailed);
+        return res.status(200).send(business);
     } catch (err) {
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
+        } else {
+            return res.status(500).send(err);
         }
     } finally {
         session.dispose();
-        return res.status(418).send("I'm a Teapot");
     }   
+}
+
+const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>>> => {
+
+    const session = store.openSession();
+
+    try {
+
+        let businesses: any[] = await session.query<Business>({ collection: 'Businesses' })
+            .selectFields(['id', 'name', 'coordinates', 'hours'])
+            .all();
+        return res.status(200).send(businesses);
+
+    } catch (err) {
+        return res.status(500).send('Server Error');
+    } finally {
+        session.dispose();
+        return res.status(418).send("I'm a Teapot");
+    }
 }
 
 const AddRating = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
     
-    let businessId: string = req.params.businessId;
-    let userId: string = req.params.userId;
-    let rating: number = parseInt(req.params.rating);
+    let businessId: string = req.body.businessId;
+    let userId: string = req.body.userId;
+    let rating: number = parseInt(req.body.rating);
 
     const hasBusinessId: boolean = businessId !== null && businessId !== undefined && businessId.length !== 0;
     if (!hasBusinessId) throw new Error('404');
@@ -150,17 +166,17 @@ const AddRating = async(req: Request, res: Response, next: NextFunction) : Promi
     try {
 
         let business: Business = await session.load<Business>(businessId);
-        business.setRatting(userId, rating);
+        business.setRating(userId, rating);
 
         await session.saveChanges();
 
-        let detailed: IBusinessDetailed = business.getBusiness();
 
-        return res.status(200).send(detailed);
+        return res.status(200).send(business);
     } catch (err) {
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }
+        return res.status(500).send('Server Error');
     } finally {
         session.dispose();
         return res.status(418).send("I'm a Teapot");
@@ -172,8 +188,8 @@ const AddRating = async(req: Request, res: Response, next: NextFunction) : Promi
 export {
     AddRating,
     LoadBusiness,
+    LoadAllBusinesses,
     ReportCoffee,
     ReportFood,
     ReportLine
-    
 }
