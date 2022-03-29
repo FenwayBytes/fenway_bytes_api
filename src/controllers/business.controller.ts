@@ -4,7 +4,8 @@ import { store } from '../raven';
 import { BAD_REQUEST } from '../constants';
 import {
     Business,
-    IBusinessDetailed
+    IBusinessDetailed,
+    Rating
 } from '../models';
 
 const ReportLine = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
@@ -127,26 +128,37 @@ const LoadBusiness = async(req: Request, res: Response, next: NextFunction) : Pr
     }   
 }
 
-const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction): Promise<Response<any, Record<string, any>>> => {
+const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction): Promise<any> => {
 
     const session = store.openSession();
 
     try {
 
         let businesses: any[] = await session.query<Business>({ collection: 'Businesses' })
-            .selectFields(['id', 'name', 'coordinates', 'hours'])
+            .selectFields(['id', 'name', 'coordinates', 'hours', 'ratings'])
             .all();
+
+        console.log("Businesses: ",  businesses);
+
+        businesses = businesses.map((business: any) => {
+            let ratingsLength = business.ratings.length;
+            return {
+                ...business,
+                rating: business.ratings.length === 0 ? 0 : business.ratings.reduce((v1: Rating, v2: Rating) => v1.getRating() + v2.getRating()) / ratingsLength
+            }
+        })
         return res.status(200).send(businesses);
 
     } catch (err) {
+        console.log(err);
         return res.status(500).send('Server Error');
     } finally {
         session.dispose();
-        return res.status(418).send("I'm a Teapot");
+        // return res.status(418).send("I'm a Teapot");
     }
 }
 
-const AddRating = async(req: Request, res: Response, next: NextFunction) : Promise<Response<any, Record<string, any>>> => {
+const AddRating = async(req: Request, res: Response, next: NextFunction) : Promise<any> => {
     
     let businessId: string = req.body.businessId;
     let userId: string = req.body.userId;
@@ -179,7 +191,6 @@ const AddRating = async(req: Request, res: Response, next: NextFunction) : Promi
         return res.status(500).send('Server Error');
     } finally {
         session.dispose();
-        return res.status(418).send("I'm a Teapot");
     }
 
     
