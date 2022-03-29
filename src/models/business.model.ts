@@ -23,7 +23,7 @@ class Business {
         private ratings: Rating[] = [],
     ) {}
 
-    public setRatting = (id: string, newRating: number): void => {
+    public setRating = (id: string, newRating: number): void => {
         let exists: boolean = false;
         for (let i = 0; i < this.ratings.length; i++) {
             exists = this.ratings[i].getId() === id;
@@ -46,17 +46,6 @@ class Business {
         let filteredRatings: number[] = this.ratings.map((rate: Rating) => rate.getRating());
         let totalRatings: number = filteredRatings.reduce((prev: number, curr: number) => prev + curr);
         return totalRatings / numberRatings;
-    }
-
-    public getBusiness = () : IBusinessDetailed => {
-        return {
-            id: this.id,
-            hours: this.hours,
-            hasCoffee: this.hasCoffee,
-            hasFood: this.hasFood,
-            hasLine: this.hasLine,
-            rating: this.getRating()
-        } as IBusinessDetailed;
     }
 
     public setCoffee = (hasCoffee: boolean) : void => {
