@@ -4,7 +4,6 @@ import { store } from '../raven';
 import { BAD_REQUEST } from '../constants';
 import {
     Business,
-    IBusinessDetailed,
     Rating
 } from '../models';
 
@@ -160,31 +159,34 @@ const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction)
 
 const AddRating = async(req: Request, res: Response, next: NextFunction) : Promise<any> => {
     
+    console.log("Body: ", req.body);
+
     let businessId: string = req.body.businessId;
     let userId: string = req.body.userId;
     let rating: number = parseInt(req.body.rating);
 
-    const hasBusinessId: boolean = businessId !== null && businessId !== undefined && businessId.length !== 0;
-    if (!hasBusinessId) throw new Error('404');
+    // const hasBusinessId: boolean = businessId !== null && businessId !== undefined && businessId.length !== 0;
+    // if (!hasBusinessId) throw new Error('404');
 
-    const hasUserId: boolean = userId !== null && userId !== undefined && userId.length !== 0;
-    if (!hasUserId) throw new Error('404');
+    // const hasUserId: boolean = userId !== null && userId !== undefined && userId.length !== 0;
+    // if (!hasUserId) throw new Error('404');
     
-    const hasRating: boolean = rating !== null && rating !== undefined && (rating <= 5 && rating >= 1);
-    if (!hasRating) throw new Error('404');
+    // const hasRating: boolean = rating !== null && rating !== undefined && (rating <= 5 && rating >= 1);
+    // if (!hasRating) throw new Error('404');
 
     const session = store.openSession();
 
     try {
 
         let business: Business = await session.load<Business>(businessId);
-        business.setRating(userId, rating);
-
+        business.ratings.push(new Rating(userId, rating));
+        console.log("Business:", business);
         await session.saveChanges();
 
 
         return res.status(200).send(business);
     } catch (err) {
+        console.log("ERR: ", err);
         if (err === '404') {
             return res.status(BAD_REQUEST.code).send(BAD_REQUEST.message);
         }

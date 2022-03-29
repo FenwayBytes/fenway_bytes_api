@@ -1,26 +1,15 @@
 import { Rating } from './rating.model';
 
-interface IBusinessDetailed {
-    id: string;
-    name: string;
-    coordinates: number[]; // Two Numbers
-    hours: [number[], number[],number[], number[],number[],number[],number[]];
-    hasCoffee: boolean;
-    hasFood: boolean;
-    hasLine: boolean;
-    rating: number;
-}
-
 class Business {
     constructor(
-        private id: string = ' ',
-        private name: string = '',
-        private coordinates: number[] = [],
-        private hours: [number[], number[], number[], number[], number[], number[], number[]] = [[], [],[],[],[],[],[]],
-        private hasCoffee: boolean = false,
-        private hasFood: boolean = false,
-        private hasLine: boolean = false,
-        private ratings: Rating[] = [],
+        public id: string = ' ',
+        public name: string = '',
+        public coordinates: number[] = [],
+        public hours: [number[], number[], number[], number[], number[], number[], number[]] = [[], [],[],[],[],[],[]],
+        public hasCoffee: boolean = false,
+        public hasFood: boolean = false,
+        public hasLine: boolean = false,
+        public ratings: Rating[] = [],
     ) {}
 
     public setRating = (id: string, newRating: number): void => {
@@ -62,6 +51,5 @@ class Business {
 }
 
 export {
-    Business,
-    IBusinessDetailed
+    Business
 }
