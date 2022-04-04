@@ -2,14 +2,15 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as BusinessController from './controllers/business.controller';
-import { ppid } from 'process';
 
 const app = express();
 
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({
+	extended: false
+}));
 
 app.get('/', (req: Request, res: Response) => {
 	return res.status(200).send("Hello Sam");

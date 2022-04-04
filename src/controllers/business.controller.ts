@@ -23,7 +23,7 @@ const ReportLine = async(req: Request, res: Response, next: NextFunction) : Prom
     try {
 
         let business: Business = await session.load<Business>(id);
-        business.setLine(hasLine);
+        business.hasLine = line;
 
         await session.saveChanges();
 
@@ -55,7 +55,7 @@ const ReportFood = async(req: Request, res: Response, next: NextFunction) : Prom
     try {
 
         let business: Business = await session.load<Business>(id);
-        business.setFood(hasFood);
+        business.hasFood = food;
 
         await session.saveChanges();
 
@@ -87,7 +87,7 @@ const ReportCoffee = async(req: Request, res: Response, next: NextFunction) : Pr
     try {
 
         let business: Business = await session.load<Business>(id);
-        business.setCoffee(hasCoffee);
+        business.hasCoffee = coffee;
 
         await session.saveChanges();
 
@@ -143,7 +143,7 @@ const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction)
             let ratingsLength = business.ratings.length;
             return {
                 ...business,
-                rating: business.ratings.length === 0 ? 0 : business.ratings.reduce((v1: Rating, v2: Rating) => v1.getRating() + v2.getRating()) / ratingsLength
+                rating: business.ratings.length === 0 ? 0 : business.ratings.reduce((v1: Rating, v2: Rating) => v1.rate + v2.rate) / ratingsLength
             }
         })
         return res.status(200).send(businesses);
