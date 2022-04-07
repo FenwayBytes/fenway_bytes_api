@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as BusinessController from './controllers/business.controller';
+import { PORT } from './config';
 
 const app = express();
 
@@ -24,6 +25,6 @@ app.post('/businesses/report/food', BusinessController.ReportFood);
 app.post('/businesses/report/line', BusinessController.ReportLine);
 
 
-app.listen(3001, () => {
-	console.log("Listening on PORT: ", 3001);
+app.listen(PORT, () => {
+	console.log("Listening on PORT: ", PORT);
 });
