@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import * as BusinessController from './controllers/business.controller';
+import * as DistanceController from './controllers/spatial.controller';
+
 import { PORT } from './config';
 
 const app = express();
@@ -18,6 +20,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.get('/businesses', BusinessController.LoadAllBusinesses);
+app.get('/businesses/closest/:lat/:long', DistanceController.LoadByDistance);
 app.get('/businesses/:id', BusinessController.LoadBusiness);
 app.post('/businesses/rating/add', BusinessController.AddRating);
 app.post('/businesses/report/coffee', BusinessController.ReportCoffee);
