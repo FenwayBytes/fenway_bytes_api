@@ -134,7 +134,7 @@ const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction)
     try {
 
         let businesses: any[] = await session.query<Business>({ collection: 'Businesses' })
-            .selectFields(['id', 'name', 'coordinates', 'hours', 'ratings'])
+            .selectFields(['id', 'name', 'coordinates', 'hours', 'ratings', 'imageUrl'])
             .all();
 
         console.log("Businesses: ",  businesses);
