@@ -10,6 +10,7 @@ class Business {
         public hasFood: boolean = false,
         public hasLine: boolean = false,
         public ratings: Rating[] = [],
+        public imageUrl?: string | undefined
     ) {}
 }
 
