@@ -17,7 +17,8 @@ const LoadByDistance = async(req: Request, res: Response, next: NextFunction): P
     try {
 
         let businesses: any[] = await session.query<Business>({ collection: 'Businesses' })
-            .spatial("coordinates", criteria => criteria.withinRadius(100, 30, 30))
+        .spatial("coordinates",
+            criteria => criteria.withinRadius(500, 30, 30))
             .selectFields(['id', 'name', 'coordinates', 'hours', 'ratings', 'imageUrl'])
             .all();
 
