@@ -137,16 +137,32 @@ const LoadAllBusinesses = async(req: Request, res: Response, next: NextFunction)
             .selectFields(['id', 'name', 'coordinates', 'hours', 'ratings', 'imageUrl'])
             .all();
 
-        console.log("Businesses: ",  businesses);
+        // console.log("Businesses: ",  businesses);
 
-        businesses = businesses.map((business: any) => {
-            let ratingsLength = business.ratings.length;
-            return {
-                ...business,
-                rating: business.ratings.length === 0 ? 0 : business.ratings.reduce((v1: Rating, v2: Rating) => v1.rate + v2.rate) / ratingsLength
+        let _businesses = businesses.map((business, index) => {
+            if (index === 0) {
+                console.log(business);
             }
-        })
-        return res.status(200).send(businesses);
+            let ratingsLength = business.ratings.length;
+            // console.log("Rating: ", business.ratings);
+            let numberRatings = business.ratings.length;
+            console.log("Index: ", index, numberRatings);
+            let ratingTotal = 0;
+            if (numberRatings > 0) {
+                for (let rate of business.ratings) {
+                    ratingTotal += rate.rate;
+                }
+                business.rating = Math.round(ratingTotal / numberRatings);
+            }
+
+            // let rating = business.ratings.length === 0 ? 0 : business.ratings.reduce((v1: Rating, v2: Rating) => v1.rate + v2.rate) / ratingsLength;
+            console.log("Rating: ", business.rating);
+            // business['rating'] = rating;
+            business.ratings = [];
+            return business;
+        });
+
+        return res.status(200).send(_businesses);
 
     } catch (err) {
         console.log(err);
